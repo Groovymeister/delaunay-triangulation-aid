@@ -1,2 +1,28 @@
-<h1>Delaunay Triangulation: Divide and Conquer Algorithm</h1>
-Delaunay triangulation diodes a set of points in a plane into triangles such that no point is inside the circumcircle of any triangle. This is a useful algorithm in computer graphics when creating well-shaped triangles in meshes. It is also useful in terrain modeling when handling geographic data and in networking by ensuring efficient communication paths.  For our project, we are going to create a pedagogical aid that walks through the process of a divide and conquer algorithm that solves the Delaunay Triangulation problem in O(n log n) time.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clickable D3 Plot with Gridlines</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <h1>Delaunay Triangulation: Divide and Conquer Algorithm</h1>
+    <p>Delaunay triangulation diodes a set of points in a plane into triangles such that no point is inside the circumcircle of any triangle. This is a useful algorithm in computer graphics when creating well-shaped triangles in meshes. It is also useful in terrain modeling when handling geographic data and in networking by ensuring efficient communication paths. For our project, we are going to create a pedagogical aid that walks through the process of a divide and conquer algorithm that solves the Delaunay Triangulation problem in O(n log n) time.</p>
+    <!-- SVG container for the grid -->
+    <svg id="plot" width="600" height="400" style="border: 1px solid black;"></svg>
+
+    <!-- Buttons container -->
+    <div id="buttons-container">
+        <button id="clear-button">Clear Points</button>
+        <button id="toggle-coords">Toggle Coordinates</button>
+        <!-- Input box and Randomize button -->
+        <input type="number" id="point-count" placeholder="Enter number of points" min="1" max="100">
+        <button id="randomize-button">Randomize</button>
+        <button id="generate-button">Generate</button>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
