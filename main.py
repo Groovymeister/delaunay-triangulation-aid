@@ -1,11 +1,15 @@
-from delaunay import Point
+from delaunay import Point, delaunay
+import sys
 
 def main():
-    num_pts = int(input("Enter the number of points: "))
     points = list()
-    for _ in range(num_pts):
-        pt_input = input("Enter the point: ").split()
-        points.append(Point(int(pt_input[0]), int(pt_input[1])))
+    with open(sys.argv[1], 'r') as file:
+        num_pts = int(file.readline().strip())
+        for _ in range(num_pts):
+            x, y = map(int, file.readline().strip().split())
+            points.append(Point(x, y))
+    delaunay_triangulation = delaunay(points)
+    print(delaunay_triangulation)
 
 if __name__ == '__main__':
     main()
