@@ -106,10 +106,10 @@ document.getElementById("randomize-button").addEventListener("click", () => {
     const input = document.getElementById("point-count");
     let numPoints = +input.value;
 
-    // Ensure the number is between 1 and 100
-    if (numPoints > 100) {
-        numPoints = 100;
-        input.value = 100;  // Reset input to 100 if above
+    // Ensure the number is between 1 and 1000
+    if (numPoints > 1000) {
+        numPoints = 1000;
+        input.value = 1000;  // Reset input to 1000 if above
     } else if (numPoints < 1 || isNaN(numPoints)) {
         numPoints = 1;  // Set default to 1 if invalid input
         input.value = 1;
@@ -121,8 +121,8 @@ document.getElementById("randomize-button").addEventListener("click", () => {
     // Generate random points
     for (let i = 0; i < numPoints; i++) {
         // Generate random coordinates relative to the center
-        const randomX = (Math.random() * (width/2)) - (width / 4);  // Range [-width/4, width/4]
-        const randomY = (Math.random() * (height/2)) - (height / 4); // Range [-height/4, height/4]
+        const randomX = (Math.random() * (width-10)) - ((width-10) / 2);  // Range [-width-10/2, width-10/2]
+        const randomY = (Math.random() * (height-10)) - ((height-10) / 2); // Range [-height-10/2, height-10/2]
         addPoint(randomX, randomY);
     }
 });
