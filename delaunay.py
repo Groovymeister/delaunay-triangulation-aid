@@ -70,7 +70,7 @@ def get_candidates(base_edge, triangulation, is_right):
     candidates.sort(key=lambda x: x[1])
     return [point for point, angle in candidates]
 
-# NOTES: Your implementation uses every single point within the right set of points as a possible candidate. I think the possible candidates are only the points that are connected to the base edge's left point or right point in the current triangulation. I only just commented it out incase I am wrong though
+# NOTES: Your implementation uses every single point within the right/left set of points as a possible candidate. I think the possible candidates are only the points that are connected to the base edge's left point or right point in the current triangulation. I only just commented it out incase I am wrong though
 
 # def get_candidates(base_edge, points, is_right):
 #     # if candidate points are selected from right set of points, base point is the edge's right point. otherwise for left set of points
