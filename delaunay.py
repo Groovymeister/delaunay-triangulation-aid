@@ -164,6 +164,7 @@ def merge(left_triangulation, right_triangulation):
             new_lr_edge = Edge(base_lr_edge.p1, right_candidate) if right_candidate else Edge(left_candidate, base_lr_edge.p2)
         else:
             raise ValueError(f"No new edge was formed")
+        triangulation.add(new_lr_edge)
         base_lr_edge = new_lr_edge
 
     return triangulation
