@@ -8,6 +8,7 @@ def angleof(p1, p2, p3):
     dx2, dy2 = p3.x - p2.x, p3.y - p2.y
     return math.atan2(dy2, dx2) - math.atan2(dy1, dx1)
 
+# Checks if point d is in circumcircle formed by points a,b,c
 def is_point_in_circle(a, b, c, d):
     ax, ay = a.x - d.x, a.y - d.y
     bx, by = b.x - d.x, b.y - d.y
