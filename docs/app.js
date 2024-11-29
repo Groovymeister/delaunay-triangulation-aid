@@ -135,10 +135,8 @@ document.getElementById("generate-button").addEventListener("click", () => {
     svg.selectAll(".point-group").each(function() {
         const pointGroup = d3.select(this);
         const circle = pointGroup.select("circle");
-        const cx = +circle.attr("cx") - originX;  // Adjust for origin
-        const cy = originY - +circle.attr("cy");  // Adjust for origin
-        
-        // Add point as an array to the points list
+        const cx = +circle.attr("cx") - originX;
+        const cy = originY - +circle.attr("cy");
         points.push([cx, cy]);
     });
 
@@ -148,14 +146,29 @@ document.getElementById("generate-button").addEventListener("click", () => {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ points: points })  // The points are now in the desired format
+        body: JSON.stringify({ points: points })
     })
     .then(response => response.json())
     .then(data => {
         console.log('Success:', data);
-        // Optionally, handle the response from the back end here
+
+        if (data.triangles) {
+            data.triangles.forEach(triangle => {
+                const [i1, i2, i3] = triangle;
+                const p1 = points[i1];
+                const p2 = points[i2];
+                const p3 = points[i3];
+
+                svg.append("polygon")
+                    .attr("points", `${originX + p1[0]},${originY - p1[1]} ${originX + p2[0]},${originY - p2[1]} ${originX + p3[0]},${originY - p3[1]}`)
+                    .attr("fill", "blue")
+                    .attr("stroke", "black")
+                    .attr("stroke-width", 1);
+            });
+        }
     })
     .catch((error) => {
         console.error('Error:', error);
     });
 });
+
