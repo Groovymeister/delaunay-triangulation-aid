@@ -12,11 +12,12 @@ CORS(app)
 def triangulate():
     data = request.get_json()
     points_data = data.get('points', [])
+    print(points_data)
     
     if not points_data:
         return jsonify({"error": "No points provided"}), 400
 
-    points = [Point(p['x'], p['y']) for p in points_data]
+    points = [Point(p[0], p[1]) for p in points_data]
 
     triangulation = delaunay(points)
 
