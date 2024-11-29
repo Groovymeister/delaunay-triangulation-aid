@@ -21,9 +21,8 @@ def triangulate():
 
     triangulation = delaunay(points)
 
-    triangles = [{"p1": {"x": edge.p1.x, "y": edge.p1.y},
-                  "p2": {"x": edge.p2.x, "y": edge.p2.y},
-                  "p3": {"x": edge.p3.x, "y": edge.p3.y}} for edge in triangulation]
+    triangles = [{"p1": {"x": edge.p1.x, "y": edge.p1.y}, 
+                  "p2": {"x": edge.p2.x, "y": edge.p2.y}} for edge in triangulation]
 
     return jsonify(triangles=triangles)
 
