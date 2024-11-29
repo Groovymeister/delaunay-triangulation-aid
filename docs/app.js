@@ -138,7 +138,6 @@ document.getElementById("randomize-button").addEventListener("click", () => {
 document.getElementById("generate-button").addEventListener("click", () => {
     const points = [];
 
-    // Gather all points from the SVG
     svg.selectAll(".point-group").each(function() {
         const pointGroup = d3.select(this);
         const circle = pointGroup.select("circle");
@@ -147,10 +146,8 @@ document.getElementById("generate-button").addEventListener("click", () => {
         points.push([cx, cy]);
     });
 
-    // Clear polygons before generating new ones
     clearPolygons();
 
-    // Send points to the back end via a POST request
     fetch('https://delaunay-triangulation-aid.onrender.com/api/triangulate', {
         method: 'POST',
         headers: {
@@ -160,17 +157,35 @@ document.getElementById("generate-button").addEventListener("click", () => {
     })
     .then(response => response.json())
     .then(data => {
-        console.log('Success:', data);
-
         if (data.triangles) {
-            data.triangles.forEach(triangle => {
-                const [i1, i2, i3] = triangle;
-                const p1 = points[i1];
-                const p2 = points[i2];
-                const p3 = points[i3];
+            const edges = data.triangles;
+            const triangles = [];
 
+            function findThirdPoint(edge1, edge2) {
+                const pointsSet = new Set([edge1.p1, edge1.p2, edge2.p1, edge2.p2]);
+                const allPoints = [edge1.p1, edge1.p2, edge2.p1, edge2.p2];
+                return allPoints.find(p => !pointsSet.has(p));
+            }
+
+            edges.forEach(edge => {
+                const { p1, p2 } = edge;
+
+                const connectedEdges = edges.filter(e => (e.p1 === p1 || e.p1 === p2 || e.p2 === p1 || e.p2 === p2) && e !== edge);
+                
+                connectedEdges.forEach(otherEdge => {
+                    const thirdPoint = findThirdPoint(edge, otherEdge);
+                    if (thirdPoint) {
+                        const triangle = [p1, p2, thirdPoint].sort().map(p => [p.x, p.y]);
+                        if (!triangles.some(t => JSON.stringify(t) === JSON.stringify(triangle))) {
+                            triangles.push(triangle);
+                        }
+                    }
+                });
+            });
+
+            triangles.forEach(triangle => {
                 svg.append("polygon")
-                    .attr("points", `${originX + p1[0]},${originY - p1[1]} ${originX + p2[0]},${originY - p2[1]} ${originX + p3[0]},${originY - p3[1]}`)
+                    .attr("points", triangle.map(p => `${originX + p[0]},${originY - p[1]}`).join(" "))
                     .attr("fill", "blue")
                     .attr("stroke", "black")
                     .attr("stroke-width", 1);
@@ -181,3 +196,4 @@ document.getElementById("generate-button").addEventListener("click", () => {
         console.error('Error:', error);
     });
 });
+
