@@ -5,7 +5,7 @@ from scipy.spatial import Delaunay
 import os
 
 app = Flask(__name__)
-CORS(app, origins=["https://groovymeister.github.io/delaunay-triangulation-aid/"])
+CORS(app, origins=["https://groovymeister.github.io"])
 
 @app.route('/api/triangulate', methods=['POST'])
 def triangulate():
