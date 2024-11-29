@@ -87,15 +87,15 @@ svg.on("click", function(event) {
     addPoint(x, y);
 });
 
-// Function to clear polygons
-function clearPolygons() {
-    svg.selectAll("polygon").remove();  // Remove all polygons
+// Function to clear edges
+function clearEdges() {
+    svg.selectAll(".edge-line").remove();
 }
 
 // Event listener for the "Clear Points" button
 document.getElementById("clear-button").addEventListener("click", () => {
     svg.selectAll(".point-group").remove();  // Remove all point groups
-    clearPolygons();  // Clear polygons as well
+    clearEdges();  // Clear polygons as well
 });
 
 // Event listener for the "Toggle Coordinates" button
@@ -123,7 +123,7 @@ document.getElementById("randomize-button").addEventListener("click", () => {
 
     // Clear previous points and polygons before adding new ones
     svg.selectAll(".point-group").remove();
-    clearPolygons();
+    clearEdges();
 
     // Generate random points
     for (let i = 0; i < numPoints; i++) {
@@ -146,7 +146,7 @@ document.getElementById("generate-button").addEventListener("click", () => {
         points.push([cx, cy]);
     });
 
-    clearPolygons();
+    clearEdges();
 
     fetch('https://delaunay-triangulation-aid.onrender.com/api/triangulate', {
         method: 'POST',
@@ -158,37 +158,18 @@ document.getElementById("generate-button").addEventListener("click", () => {
     .then(response => response.json())
     .then(data => {
         if (data.triangles) {
-            const edges = data.triangles;
-            const triangles = [];
+            data.triangles.forEach(edge => {
+                const p1 = edge.p1;
+                const p2 = edge.p2;
 
-            function findThirdPoint(edge1, edge2) {
-                const pointsSet = new Set([edge1.p1, edge1.p2, edge2.p1, edge2.p2]);
-                const allPoints = [edge1.p1, edge1.p2, edge2.p1, edge2.p2];
-                return allPoints.find(p => !pointsSet.has(p));
-            }
-
-            edges.forEach(edge => {
-                const { p1, p2 } = edge;
-
-                const connectedEdges = edges.filter(e => (e.p1 === p1 || e.p1 === p2 || e.p2 === p1 || e.p2 === p2) && e !== edge);
-                
-                connectedEdges.forEach(otherEdge => {
-                    const thirdPoint = findThirdPoint(edge, otherEdge);
-                    if (thirdPoint) {
-                        const triangle = [p1, p2, thirdPoint].sort().map(p => [p.x, p.y]);
-                        if (!triangles.some(t => JSON.stringify(t) === JSON.stringify(triangle))) {
-                            triangles.push(triangle);
-                        }
-                    }
-                });
-            });
-
-            triangles.forEach(triangle => {
-                svg.append("polygon")
-                    .attr("points", triangle.map(p => `${originX + p[0]},${originY - p[1]}`).join(" "))
-                    .attr("fill", "blue")
-                    .attr("stroke", "black")
-                    .attr("stroke-width", 1);
+                svg.append("line")
+                    .attr("x1", originX + p1.x)
+                    .attr("y1", originY - p1.y)
+                    .attr("x2", originX + p2.x)
+                    .attr("y2", originY - p2.y)
+                    .attr("stroke", "blue")
+                    .attr("stroke-width", 2)
+                    .attr("class", "edge-line");
             });
         }
     })
