@@ -143,7 +143,7 @@ document.getElementById("generate-button").addEventListener("click", () => {
     });
 
     // Send points to the back end via a POST request
-    fetch('http://127.0.0.1:5000/api/triangulate', {
+    fetch('https://delaunay-triangulation-aid.onrender.com/api/triangulate', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
