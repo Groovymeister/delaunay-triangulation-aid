@@ -2,6 +2,7 @@
 
 from utils import *
 from scipy.spatial import ConvexHull, Delaunay
+from convexhull import *
 import numpy as np
 import math
 
@@ -11,6 +12,11 @@ class Point:
         self.x = x
         self.y = y
     
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+    
+    def __hash__(self):
+        return hash((self.x, self.y))
     def __repr__(self):
         return f"Point( {self.x}, {self.y} )"
 # Edge class
@@ -45,18 +51,24 @@ def get_convex_hull(points):
     # Step 1: Convert the points to a NumPy array
     points_array = np.array([[p.x, p.y] for p in points])
 
-    # Step 2: Pass the array to ConvexHull
-    hull = ConvexHull(points_array)
+    # # Step 2: Pass the array to ConvexHull
+    # hull_scipy = ConvexHull(points_array)
 
-    # Step 3: Extract the vertices as indices
-    vertex_indices = hull.vertices
+    # # Step 3: Extract the vertices as indices
+    # vertex_indices = hull_scipy.vertices
 
-    # Step 4: Convert the indices back to the original Point objects
-    convex_hull_points = [points[i] for i in vertex_indices]
+    # # Step 4: Convert the indices back to the original Point objects
+    # convex_hull_points_scipy = [points[i] for i in vertex_indices]
 
+    hull = graham_scan(points_array)
+    convex_hull_points = [Point(x, y) for x,y in hull]
+
+   
     return convex_hull_points
 
 def lr_edge(left_points, right_points):
+    lc = 0
+    rc = 0
     # Start by getting left convex hull and right convex hull
     left_hull_points = get_convex_hull(left_points)
     right_hull_points = get_convex_hull(right_points)
@@ -74,16 +86,18 @@ def lr_edge(left_points, right_points):
         next_p1 = next_point_on_hull(left_hull_points, p1, clockwise=True)
         if is_lower_edge(next_p1, p2, p1, p2):
             p1 = next_p1
+            lc += 1
             moved = True
 
         # Check if we can move counterclockwise on the right hull to improve the edge
         next_p2 = next_point_on_hull(right_hull_points, p2, clockwise=False)
         if is_lower_edge(p1, next_p2, p1, p2):
             p2 = next_p2
+            rc += 1
             moved = True
 
         # Stop if neither p1 nor p2 can move
-        if not moved:
+        if not moved or lc > len(left_hull_points) or rc > len(right_hull_points):
             break
     return Edge(p1, p2)
 
@@ -104,7 +118,9 @@ def is_lower_edge(p1_new, p2_new, p1_old, p2_old):
     # This is based on comparing slopes.
     # if pivot point is on the right, if new slope is higher, we return True
     # if pivot point is on the left, if new slope is lower, we return True
-    if (p2_old.x - p1_old.x) == 0:
+    if (p2_old.x - p1_old.x) == 0 and (p2_new.x - p1_new.x) == 0:
+        return False
+    elif (p2_old.x - p1_old.x) == 0:
         return True
     elif (p2_new.x - p1_new.x) == 0:
         return True
@@ -269,7 +285,7 @@ def base_case(points):
     return edges
 
 def delaunay(points):
-    points = sorted(points, key=lambda p: p.x)
+    points = sorted(points, key=lambda p: (p.x, p.y))
     if len(points) <= 3:
         return base_case(points)
 
