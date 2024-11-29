@@ -87,9 +87,15 @@ svg.on("click", function(event) {
     addPoint(x, y);
 });
 
+// Function to clear polygons
+function clearPolygons() {
+    svg.selectAll("polygon").remove();  // Remove all polygons
+}
+
 // Event listener for the "Clear Points" button
 document.getElementById("clear-button").addEventListener("click", () => {
     svg.selectAll(".point-group").remove();  // Remove all point groups
+    clearPolygons();  // Clear polygons as well
 });
 
 // Event listener for the "Toggle Coordinates" button
@@ -115,8 +121,9 @@ document.getElementById("randomize-button").addEventListener("click", () => {
         input.value = 1;
     }
 
-    // Clear previous points before adding new ones
+    // Clear previous points and polygons before adding new ones
     svg.selectAll(".point-group").remove();
+    clearPolygons();
 
     // Generate random points
     for (let i = 0; i < numPoints; i++) {
@@ -139,6 +146,9 @@ document.getElementById("generate-button").addEventListener("click", () => {
         const cy = originY - +circle.attr("cy");
         points.push([cx, cy]);
     });
+
+    // Clear polygons before generating new ones
+    clearPolygons();
 
     // Send points to the back end via a POST request
     fetch('https://delaunay-triangulation-aid.onrender.com/api/triangulate', {
@@ -171,4 +181,3 @@ document.getElementById("generate-button").addEventListener("click", () => {
         console.error('Error:', error);
     });
 });
-
