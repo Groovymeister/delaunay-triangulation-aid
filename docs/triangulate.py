@@ -1,39 +1,31 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS 
+from flask_cors import CORS
 import numpy as np
 from scipy.spatial import Delaunay
-
-import sys
 import os
-
-sys.path.append(os.path.abspath('..'))
-from main import *
+from delaunay import delaunay, Point, Edge
 
 app = Flask(__name__)
-# CORS(app)  
-CORS(app, resources={r"/api/*": {"origins": "http://127.0.0.1:5500"}})
+CORS(app)
 
 @app.route('/api/triangulate', methods=['POST'])
 def triangulate():
     data = request.get_json()
-    points = data.get('points', [])
+    points_data = data.get('points', [])
+    print(points_data)
     
-    if not points:
+    if not points_data:
         return jsonify({"error": "No points provided"}), 400
-    # print(points)
 
-    point_objects = []
-    for point in points:
-        x, y = point[0], point[1]
-        point_objects.append(Point(float(x), float(y)))
-        
-    triangulation = delaunay(point_objects)
-    print('not the algo')
-    edge_lists = []
-    for edge in triangulation:
-        edge_lists.append([edge.p1.x, edge.p1.y, edge.p2.x, edge.p2.y])
-    print("not the appending")
-    return jsonify(list(edge_lists))
+    points = [Point(p[0], p[1]) for p in points_data]
+
+    triangulation = delaunay(points)
+
+    triangles = [{"p1": {"x": edge.p1.x, "y": edge.p1.y}, 
+                  "p2": {"x": edge.p2.x, "y": edge.p2.y}} for edge in triangulation]
+
+    return jsonify(triangles=triangles)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)

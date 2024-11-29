@@ -87,10 +87,15 @@ svg.on("click", function(event) {
     addPoint(x, y);
 });
 
+// Function to clear edges
+function clearEdges() {
+    svg.selectAll(".edge-line").remove();
+}
+
 // Event listener for the "Clear Points" button
 document.getElementById("clear-button").addEventListener("click", () => {
     svg.selectAll(".point-group").remove();  // Remove all point groups
-    svg.selectAll(".line-segment").remove();  // Remove all line segments
+    clearEdges();  // Clear polygons as well
 });
 
 // Event listener for the "Toggle Coordinates" button
@@ -116,8 +121,9 @@ document.getElementById("randomize-button").addEventListener("click", () => {
         input.value = 1;
     }
 
-    // Clear previous points before adding new ones
+    // Clear previous points and polygons before adding new ones
     svg.selectAll(".point-group").remove();
+    clearEdges();
 
     // Generate random points
     for (let i = 0; i < numPoints; i++) {
@@ -131,50 +137,43 @@ document.getElementById("randomize-button").addEventListener("click", () => {
 document.getElementById("generate-button").addEventListener("click", () => {
     const points = [];
 
-    // Gather all points from the SVG
     svg.selectAll(".point-group").each(function() {
         const pointGroup = d3.select(this);
         const circle = pointGroup.select("circle");
-        const cx = +circle.attr("cx") - originX;  // Adjust for origin
-        const cy = originY - +circle.attr("cy");  // Adjust for origin
-        
-        // Add point as an array to the points list
+        const cx = +circle.attr("cx") - originX;
+        const cy = originY - +circle.attr("cy");
         points.push([cx, cy]);
     });
 
-    fetch('http://127.0.0.1:5000/api/triangulate', {
+    clearEdges();
+
+    fetch('https://delaunay-triangulation-aid.onrender.com/api/triangulate', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ points: points })  // Send points to the back end
+        body: JSON.stringify({ points: points })
     })
     .then(response => response.json())
     .then(data => {
-        console.log('Line segments received:', data);
-        drawLineSegments(data);  // Pass the response to a function that draws the segments
+        if (data.triangles) {
+            data.triangles.forEach(edge => {
+                const p1 = edge.p1;
+                const p2 = edge.p2;
+
+                svg.append("line")
+                    .attr("x1", originX + p1.x)
+                    .attr("y1", originY - p1.y)
+                    .attr("x2", originX + p2.x)
+                    .attr("y2", originY - p2.y)
+                    .attr("stroke", "blue")
+                    .attr("stroke-width", 2)
+                    .attr("class", "edge-line");
+            });
+        }
     })
     .catch((error) => {
         console.error('Error:', error);
     });
 });
 
-// Function to draw line segments
-function drawLineSegments(segments) {
-    // Clear previous lines (optional)
-    svg.selectAll(".line-segment").remove();
-
-    // Draw each line segment
-    segments.forEach(segment => {
-        const [x1, y1, x2, y2] = segment;
-
-        svg.append("line")
-            .attr("class", "line-segment")
-            .attr("x1", originX + x1)  // Adjust x1 for origin
-            .attr("y1", originY - y1)  // Adjust y1 for origin
-            .attr("x2", originX + x2)  // Adjust x2 for origin
-            .attr("y2", originY - y2)  // Adjust y2 for origin
-            .attr("stroke", "blue")   // Line color
-            .attr("stroke-width", 2); // Line thickness
-    });
-}
