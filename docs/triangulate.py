@@ -3,8 +3,7 @@ from flask_cors import CORS
 import numpy as np
 from scipy.spatial import Delaunay
 import os
-from utils import Point, Edge
-from delaunay import delaunay
+from delaunay import delaunay, Point, Edge
 
 app = Flask(__name__)
 CORS(app)
