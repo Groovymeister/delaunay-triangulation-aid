@@ -90,6 +90,7 @@ svg.on("click", function(event) {
 // Event listener for the "Clear Points" button
 document.getElementById("clear-button").addEventListener("click", () => {
     svg.selectAll(".point-group").remove();  // Remove all point groups
+    svg.selectAll(".line-segment").remove();  // Remove all line segments
 });
 
 // Event listener for the "Toggle Coordinates" button
@@ -127,7 +128,6 @@ document.getElementById("randomize-button").addEventListener("click", () => {
     }
 });
 
-// Event listener for the "Generate" button
 document.getElementById("generate-button").addEventListener("click", () => {
     const points = [];
 
@@ -142,20 +142,39 @@ document.getElementById("generate-button").addEventListener("click", () => {
         points.push([cx, cy]);
     });
 
-    // Send points to the back end via a POST request
     fetch('http://127.0.0.1:5000/api/triangulate', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ points: points })  // The points are now in the desired format
+        body: JSON.stringify({ points: points })  // Send points to the back end
     })
     .then(response => response.json())
     .then(data => {
-        console.log('Success:', data);
-        // Optionally, handle the response from the back end here
+        console.log('Line segments received:', data);
+        drawLineSegments(data);  // Pass the response to a function that draws the segments
     })
     .catch((error) => {
         console.error('Error:', error);
     });
 });
+
+// Function to draw line segments
+function drawLineSegments(segments) {
+    // Clear previous lines (optional)
+    svg.selectAll(".line-segment").remove();
+
+    // Draw each line segment
+    segments.forEach(segment => {
+        const [x1, y1, x2, y2] = segment;
+
+        svg.append("line")
+            .attr("class", "line-segment")
+            .attr("x1", originX + x1)  // Adjust x1 for origin
+            .attr("y1", originY - y1)  // Adjust y1 for origin
+            .attr("x2", originX + x2)  // Adjust x2 for origin
+            .attr("y2", originY - y2)  // Adjust y2 for origin
+            .attr("stroke", "blue")   // Line color
+            .attr("stroke-width", 2); // Line thickness
+    });
+}
