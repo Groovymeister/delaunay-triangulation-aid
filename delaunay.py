@@ -6,6 +6,8 @@ from convexhull import *
 import numpy as np
 import math
 
+steps = []
+
 # Point class
 class Point:
     def __init__(self, x, y):
@@ -201,6 +203,7 @@ def merge(left_triangulation, right_triangulation):
     triangulation = left_triangulation.union(right_triangulation)
     base_lr_edge = lr_edge(edges_to_points(left_triangulation), edges_to_points(right_triangulation))
     triangulation.add(base_lr_edge)
+    steps.append(("add", base_lr_edge))
 
     while True:
         left_removed_edges = set()
@@ -227,6 +230,7 @@ def merge(left_triangulation, right_triangulation):
             elif test_angle < math.pi:
                 # first holds but second doesnt, remove RR edge from potential candidates, consider next right candidate 
                 triangulation.discard(Edge(base_lr_edge.p2, curr_poss_candidate))
+                steps.append(("remove", Edge(base_lr_edge.p2, curr_poss_candidate)))
                 right_removed_edges.add(Edge(base_lr_edge.p2, curr_poss_candidate))
                 right_candidates.pop(0) 
             else:
@@ -244,6 +248,7 @@ def merge(left_triangulation, right_triangulation):
             elif test_angle < math.pi:
                 # first holds but second doesnt, remove RR edge from potential candidates, consider next right candidate 
                 triangulation.discard(Edge(base_lr_edge.p1, curr_poss_candidate))
+                steps.append(("remove", Edge(base_lr_edge.p1, curr_poss_candidate)))
                 left_removed_edges.add(Edge(base_lr_edge.p1, curr_poss_candidate))
                 left_candidates.pop(0) 
             else:
@@ -270,6 +275,7 @@ def merge(left_triangulation, right_triangulation):
             raise ValueError(f"No new edge was formed")
         triangulation.add(new_lr_edge)
         base_lr_edge = new_lr_edge
+        steps.append(("add", base_lr_edge))
 
     return triangulation
 
@@ -282,6 +288,9 @@ def base_case(points):
     # if there are three points, add edges between every two points
     elif len(points) == 3:
         edges.update([Edge(points[0], points[1]), Edge(points[1], points[2]), Edge(points[2], points[0])])
+
+    steps.append(("initial_edges", edges))
+
     return edges
 
 def delaunay(points):
@@ -293,4 +302,4 @@ def delaunay(points):
     left_points = points[:midpoint]
     right_points = points[midpoint:]
 
-    return merge(delaunay(left_points), delaunay(right_points))
+    return merge(delaunay(left_points), delaunay(right_points)), steps

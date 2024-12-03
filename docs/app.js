@@ -177,3 +177,29 @@ document.getElementById("generate-button").addEventListener("click", () => {
     });
 });
 
+document.getElementById("step-button").addEventListener("click", () => {
+    const points = [];
+
+    svg.selectAll(".point-group").each(function() {
+        const pointGroup = d3.select(this);
+        const circle = pointGroup.select("circle");
+        const cx = +circle.attr("cx") - originX;
+        const cy = originY - +circle.attr("cy");
+        points.push([cx, cy]);
+    });
+
+    fetch('https://delaunay-triangulation-aid.onrender.com/api/step', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ points: points })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Steps:", data.steps);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+});
