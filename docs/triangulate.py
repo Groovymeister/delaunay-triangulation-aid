@@ -19,7 +19,7 @@ def triangulate():
 
     points = [Point(p[0], p[1]) for p in points_data]
 
-    triangulation, _ = delaunay(points)
+    triangulation = delaunay(points)
 
     triangles = [{"p1": {"x": edge.p1.x, "y": edge.p1.y}, 
                   "p2": {"x": edge.p2.x, "y": edge.p2.y}} for edge in triangulation]
@@ -37,7 +37,7 @@ def step():
 
     points = [Point(p[0], p[1]) for p in points_data]
 
-    _, steps = delaunay(points)
+    triangulation, steps = delaunay(points)
 
     formatted_steps = []
     for step in steps:
