@@ -3,6 +3,8 @@ const width = +svg.attr("width");
 const height = +svg.attr("height");
 const originX = width / 2;  // x = 0 point
 const originY = height / 2;  // y = 0 point
+let steps = [];
+let currentStep = 0;
 
 // Track whether coordinates are visible or not
 let showCoordinates = true;
@@ -77,6 +79,7 @@ function addPoint(x, y) {
         .attr("visibility", showCoordinates ? "visible" : "hidden")
         .text(`(${Math.round(x)}, ${Math.round(y)})`)
         .style("pointer-events", "none");
+    fetchSteps(getAllPoints());
 }
 
 // Click to add points manually
@@ -132,6 +135,7 @@ document.getElementById("randomize-button").addEventListener("click", () => {
         const randomY = (Math.random() * (height-10)) - ((height-10) / 2); // Range [-height-10/2, height-10/2]
         addPoint(randomX, randomY);
     }
+    fetchSteps(getAllPoints());
 });
 
 document.getElementById("generate-button").addEventListener("click", () => {
@@ -177,9 +181,27 @@ document.getElementById("generate-button").addEventListener("click", () => {
     });
 });
 
-document.getElementById("step-button").addEventListener("click", () => {
-    const points = [];
+function fetchSteps(points) {
+    fetch('https://delaunay-triangulation-aid.onrender.com/api/step', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ points: points })  // Send updated points
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Fetched Steps: ", data.steps);
+        steps = data.steps;
+        currentStep = 0;  // Reset step to start from the beginning after update
+    })
+    .catch((error) => {
+        console.error('Error fetching steps:', error);
+    });
+}
 
+function getAllPoints() {
+    const points = [];
     svg.selectAll(".point-group").each(function() {
         const pointGroup = d3.select(this);
         const circle = pointGroup.select("circle");
@@ -187,19 +209,59 @@ document.getElementById("step-button").addEventListener("click", () => {
         const cy = originY - +circle.attr("cy");
         points.push([cx, cy]);
     });
+    return points;
+}
 
-    fetch('https://delaunay-triangulation-aid.onrender.com/api/step', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ points: points })
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log("Steps:", data.steps);
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
+document.getElementById("step-button").addEventListener("click", () => {
+    if (currentStep < steps.length) {
+        const step = steps[currentStep];
+
+        switch (step.type) {
+            case "add":
+                step.edges.forEach(edge => {
+                    svg.append("line")
+                        .attr("x1", originX + edge.p1.x)
+                        .attr("y1", originY - edge.p1.y)
+                        .attr("x2", originX + edge.p2.x)
+                        .attr("y2", originY - edge.p2.y)
+                        .attr("stroke", "blue")
+                        .attr("stroke-width", 2)
+                        .attr("class", "edge-line");
+                });
+                break;
+            case "remove":
+                step.edges.forEach(edge => {
+                    svg.selectAll(".edge-line")
+                        .filter(function() {
+                            const line = d3.select(this);
+                            const x1 = +line.attr("x1");
+                            const y1 = +line.attr("y1");
+                            const x2 = +line.attr("x2");
+                            const y2 = +line.attr("y2");
+                            return (x1 === originX + edge.p1.x && y1 === originY - edge.p1.y &&
+                                x2 === originX + edge.p2.x && y2 === originY - edge.p2.y);
+                        })
+                        .remove();
+                });
+                break;
+            case "initial_edges":
+                step.edges.forEach(edge => {
+                    svg.append("line")
+                        .attr("x1", originX + edge.p1.x)
+                        .attr("y1", originY - edge.p1.y)
+                        .attr("x2", originX + edge.p2.x)
+                        .attr("y2", originY - edge.p2.y)
+                        .attr("stroke", "blue")
+                        .attr("stroke-width", 2)
+                        .attr("class", "edge-line");
+                });
+                break;
+        }
+
+        currentStep++;
+    } else {
+        console.log("No more steps to perform.");
+    }
 });
+
+
