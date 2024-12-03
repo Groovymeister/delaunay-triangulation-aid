@@ -305,4 +305,6 @@ def delaunay(points):
     return merge(delaunay(left_points), delaunay(right_points))
 
 def return_steps(points):
+    global steps
+    steps = []
     return delaunay(points), steps
