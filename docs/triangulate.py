@@ -41,12 +41,16 @@ def step():
 
     formatted_steps = []
     for step in steps:
-
         step_type = step[0]
-        
-        edges = [{"p1": {"x": edge.p1.x, "y": edge.p1.y}, 
-                  "p2": {"x": edge.p2.x, "y": edge.p2.y}} for edge in step[1]]
-    
+        edges_data = step[1]
+
+        if isinstance(edges_data, set):
+            edges = [{"p1": {"x": edge.p1.x, "y": edge.p1.y}, 
+                      "p2": {"x": edge.p2.x, "y": edge.p2.y}} for edge in edges_data]
+        else:
+            edges = [{"p1": {"x": edges_data.p1.x, "y": edges_data.p1.y}, 
+                      "p2": {"x": edges_data.p2.x, "y": edges_data.p2.y}}]
+
         formatted_steps.append({
             "type": step_type,
             "edges": edges
@@ -55,6 +59,7 @@ def step():
     print("Formatted Steps: ", formatted_steps)
     
     return jsonify(steps=formatted_steps)
+
     
 
 if __name__ == '__main__':
