@@ -303,3 +303,6 @@ def delaunay(points):
     right_points = points[midpoint:]
 
     return merge(delaunay(left_points), delaunay(right_points))
+
+def return_steps(points):
+    return delaunay(points), steps

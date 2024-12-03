@@ -3,7 +3,7 @@ from flask_cors import CORS
 import numpy as np
 from scipy.spatial import Delaunay
 import os
-from delaunay import delaunay, Point, Edge
+from delaunay import delaunay, Point, Edge, return_steps
 
 app = Flask(__name__)
 CORS(app)
@@ -37,7 +37,7 @@ def step():
 
     points = [Point(p[0], p[1]) for p in points_data]
 
-    triangulation, steps = delaunay(points)
+    _, steps = return_steps(points)
 
     formatted_steps = []
     for step in steps:
