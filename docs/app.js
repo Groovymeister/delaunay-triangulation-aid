@@ -3,9 +3,15 @@ const width = +svg.attr("width");
 const height = +svg.attr("height");
 const originX = width / 2;  // x = 0 point
 const originY = height / 2;  // y = 0 point
+const autoModeToggle = document.getElementById("auto-mode-toggle");
+const autoModeSlider = document.getElementById("auto-mode-slider");
+const sliderValueDisplay = document.getElementById("slider-value");
+
 let steps = [];
 let currentStep = 0;
 let triangulationComplete = false;
+let autoModeEnabled = false;
+let autoModeInterval = null;
 
 // Track whether coordinates are visible or not
 let showCoordinates = true;
@@ -149,6 +155,8 @@ document.getElementById("randomize-button").addEventListener("click", () => {
 });
 
 document.getElementById("generate-button").addEventListener("click", () => {
+    if (autoModeEnabled) { startAutoMode();}
+    else{
     const points = [];
     
 
@@ -191,6 +199,7 @@ document.getElementById("generate-button").addEventListener("click", () => {
         console.error('Error:', error);
     });
     triangulationComplete = true;
+}
 });
 
 function fetchSteps(points) {
@@ -286,6 +295,32 @@ function processStep() {
     currentStep++;
 }
 
+// Slider value display
+autoModeSlider.addEventListener("input", () => {
+    sliderValueDisplay.textContent = `${autoModeSlider.value}ms`;
+});
 
+// Toggle auto mode on/off
+autoModeToggle.addEventListener("change", () => {
+    autoModeEnabled = autoModeToggle.checked;
+    if (!autoModeEnabled && autoModeInterval) {
+        clearInterval(autoModeInterval);
+        autoModeInterval = null;
+    }
+});
 
-
+function startAutoMode() {
+    fetchSteps(getAllPoints()).then(() => {
+        if (steps.length > 0) {
+            function executeStep() {
+                if (currentStep < steps.length) {
+                    processStep();
+                    setTimeout(executeStep, parseInt(autoModeSlider.value));
+                } else {
+                    triangulationComplete = true;
+                }
+            }
+            executeStep();
+        }
+    });
+}

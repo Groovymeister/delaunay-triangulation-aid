@@ -21,7 +21,13 @@
         <button id="randomize-button">Randomize</button>
         <button id="generate-button">Generate</button>
         <button id="step-button">Step</button>
-
+        <div>
+            <label>
+                <input type="checkbox" id="auto-mode-toggle"> Auto Mode
+            </label>
+            <input type="range" id="auto-mode-slider" min="100" max="2000" step="100" value="500">
+            <span id="slider-value">500ms</span>
+        </div>
     </div>
 
     <script src="app.js"></script>
