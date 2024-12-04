@@ -67,7 +67,9 @@ function addPoint(x, y) {
         .attr("r", 3)  // Smaller circle radius
         .attr("fill", "red")
         .style("cursor", "pointer")
+        
         .on("click", function(event) {
+            if (triangulationComplete || currentStep > 0) {return;}
             pointGroup.remove();
             event.stopPropagation();  // Prevent adding a new point while removing
         });
