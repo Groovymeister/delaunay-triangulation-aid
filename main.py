@@ -11,10 +11,10 @@ def main():
             x, y = map(int, file.readline().strip().split())
             points.append(Point(x, y))
     delaunay_triangulation = delaunay(points)
-    # print("PREDICTED")
-    # for edge in delaunay_triangulation:
-    #     print(edge)
-    # print()
+    print("PREDICTED")
+    for edge in delaunay_triangulation:
+        print(edge)
+    print()
     test_triangulation = Delaunay(np.array([[p.x, p.y] for p in points]))
     simplices = test_triangulation.simplices
     edges = set()
