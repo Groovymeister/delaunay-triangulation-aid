@@ -3,165 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clickable D3 Plot with Gridlines</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/vs2015.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-
-    <link rel="stylesheet" href="style.css">
+    <title>Delaunay Triangulation: Divide and Conquer Algorithm</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="format.css">
 </head>
 <body>
-    <!-- Title Section -->
-    <section class="hero">
-        <div class="container">
-            <h1>Delaunay Triangulation Pedagogical Aid</h1>
-            <p>A pedagogical aid for understanding Delaunay triangulation, with interactive visualizations and step-by-step explanations to deepen your grasp of computational geometry.</p>
+    <header>
+        <h1>Delaunay Triangulation: Divide and Conquer Algorithm</h1>
+        <nav>
+            <ul>
+                <li><a href="#demo">Demo</a></li>
+                <li><a href="#how-to-use">Usage</a></li>
+                <li><a href="#algorithm">Algorithm</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#refs">References</a></li>
+                <li><a href="#authors">Contributions</a></li>
+            </ul>
+        </nav>
+    </header>
 
-            <h3 class="subheading">What is a Delaunay Triangulation?</h3>
-            <p class = "body-text">Delaunay triangulation divides a set of points in a plane into triangles such that no point is inside the circumcircle of any triangle. This is a useful algorithm in computer graphics when creating well-shaped triangles in meshes. It is also useful in terrain modeling when handling geographic data and in networking by ensuring efficient communication paths. </p>
-            
-            
-            <h3 class = "subheading">Delaunay Triangulation: Divide and Conquer Algorithm</h3>
-            <p class = "body-text">For our project, we are going to create a pedagogical aid that walks through the process of a divide and conquer algorithm that solves the Delaunay Triangulation problem in O(n log n) time.</p>
+    <section id="demo">
+        <h2>Delaunay Triangulation: Divide and Conquer Algorithm</h2>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+                <svg id="plot" width="600" height="600" style="border: 1px solid black;"></svg>
+    
+                <div id="buttons-container">
+                    <button id="clear-button">Clear Points</button>
+                    <button id="toggle-coords">Toggle Coordinates</button>
+                    <input type="number" id="point-count" placeholder="Enter number of points" min="3" max="100" value="15">
+                    <button id="randomize-button">Randomize</button>
+                    <button id="generate-button">Generate</button>
+                    <button id="step-button">Step</button>
+                    <div>
+                        <label>
+                            <input type="checkbox" id="auto-mode-toggle"> Auto Mode
+                        </label>
+                        <input type="range" id="auto-mode-slider" min="100" max="2000" step="100" value="500">
+                        <span id="slider-value">500ms</span>
+                    </div>
+                </div>
+            </div>
+            <div id="pseudocode">
+                <h3>Pseudocode</h3>
+                <p>TODO: Add pseudocode here, we can highlight l8r</p>
+            </div>
         </div>
     </section>
-
     
-    
-    <!-- SVG container for the grid -->
-     <div class="grid-container">
-        <svg id="plot" width="900" height="600" style="border: 1px solid black;"></svg>
 
-         <!-- Buttons container -->
-        <div id="buttons-container">
-            <button id="clear-button">Clear Points</button>
-            <button id="toggle-coords">Toggle Coordinates</button>
-            <!-- Input box and Randomize button -->
-            <input type="number" id="point-count" placeholder="Enter number of points" min="1" max="100">
-            <button id="randomize-button">Randomize</button>
-            <button id="generate-button">Generate</button>
-            <button id="step-button">Step</button>
-    
-        </div>
-        <pre>
-            <code>
+    <section id="how-to-use">
+        <h2>How to Use Our Demo</h2>
+        <p>TODO: ADD INSTRUCTIONS</p>
+    </section>
 
-                def merge(left_triangulation, right_triangulation):
-                    triangulation = left_triangulation.union(right_triangulation)
-                    base_lr_edge = lr_edge(edges_to_points(left_triangulation), edges_to_points(right_triangulation))
-                    triangulation.add(base_lr_edge)
-                    steps.append(("add", base_lr_edge))
-                
-                    while True:
-                        left_removed_edges = set()
-                        right_removed_edges = set()
-                        left_candidate = None
-                        right_candidate = None
-                        right_candidates = get_candidates(base_lr_edge, right_triangulation, True)
-                        left_candidates = get_candidates(base_lr_edge, left_triangulation, False)
-                        
-                        
-                        # for every potential right candidate, ensure
-                        # 1. the angle it makes with the base is less than 180 
-                        # 2. the next potential candidate is outside the circumcircle formed with the base edge
-                        # ASSUMPTION: If we are looking at the final point, then we do not bother testing for if the next point is within circumcircle
-                        while not right_candidate and len(right_candidates) > 0:
-                            curr_poss_candidate = right_candidates[0]
-                            next_poss_candidate = right_candidates[1] if len(right_candidates) > 1 else None
-                            test_angle = clockwise_angle(base_lr_edge.p2, base_lr_edge.p1, base_lr_edge.p2, curr_poss_candidate)
-                            if next_poss_candidate and test_angle < math.pi and not is_point_in_circle(base_lr_edge.p1, base_lr_edge.p2, curr_poss_candidate, next_poss_candidate):
-                                right_candidate = curr_poss_candidate
-                                break
-                            elif test_angle < math.pi and not next_poss_candidate:
-                                right_candidate = curr_poss_candidate
-                            elif test_angle < math.pi:
-                                # first holds but second doesnt, remove RR edge from potential candidates, consider next right candidate 
-                                triangulation.discard(Edge(base_lr_edge.p2, curr_poss_candidate))
-                                steps.append(("remove", Edge(base_lr_edge.p2, curr_poss_candidate)))
-                                right_removed_edges.add(Edge(base_lr_edge.p2, curr_poss_candidate))
-                                right_candidates.pop(0) 
-                            else:
-                                break # If the first criteria does not hold, we do not select a right candidate
-                
-                        while not left_candidate and len(left_candidates) > 0:
-                            curr_poss_candidate = left_candidates[0]
-                            next_poss_candidate = left_candidates[1] if len(left_candidates) > 1 else None
-                            test_angle = clockwise_angle(base_lr_edge.p1, curr_poss_candidate, base_lr_edge.p1, base_lr_edge.p2)
-                            if next_poss_candidate and test_angle < math.pi and not is_point_in_circle(base_lr_edge.p1, base_lr_edge.p2, curr_poss_candidate, next_poss_candidate):
-                                left_candidate = curr_poss_candidate
-                                break
-                            elif test_angle < math.pi and not next_poss_candidate:
-                                left_candidate = curr_poss_candidate
-                            elif test_angle < math.pi:
-                                # first holds but second doesnt, remove RR edge from potential candidates, consider next right candidate 
-                                triangulation.discard(Edge(base_lr_edge.p1, curr_poss_candidate))
-                                steps.append(("remove", Edge(base_lr_edge.p1, curr_poss_candidate)))
-                                left_removed_edges.add(Edge(base_lr_edge.p1, curr_poss_candidate))
-                                left_candidates.pop(0) 
-                            else:
-                                break # If the first criteria does not hold, we do not select a left candidate
-                        
-                        # No candidates were returned, merge complete
-                        if not left_candidate and not right_candidate:
-                            triangulation.update(left_removed_edges)
-                            triangulation.update(right_removed_edges)
-                            break
-                        # Both candidates were returned, create new lr edge for candidate which forms circumcircle that does not contain other point
-                        elif left_candidate and right_candidate:
-                            if is_point_in_circle(base_lr_edge.p1, base_lr_edge.p2, right_candidate, left_candidate):
-                                new_lr_edge = Edge(left_candidate, base_lr_edge.p2)
-                                triangulation.update(right_removed_edges)
-                            else:
-                                new_lr_edge = Edge(base_lr_edge.p1, right_candidate)
-                                triangulation.update(left_removed_edges)
-                        # One candiate was returned, create new lr edge
-                        elif left_candidate or right_candidate:
-                            new_lr_edge = Edge(base_lr_edge.p1, right_candidate) if right_candidate else Edge(left_candidate, base_lr_edge.p2)
-                            triangulation.update(left_removed_edges) if right_candidate else triangulation.update(right_removed_edges)
-                        else:
-                            raise ValueError(f"No new edge was formed")
-                        triangulation.add(new_lr_edge)
-                        base_lr_edge = new_lr_edge
-                        steps.append(("add", base_lr_edge))
-                
-                    return triangulation
-                
-                # base case for dividing points
-                def base_case(points):
-                    edges = set()
-                    # if there are only two points, add an edge
-                    if len(points) == 2:
-                        edges.add(Edge(points[0], points[1]))
-                    # if there are three points, add edges between every two points
-                    elif len(points) == 3:
-                        edges.update([Edge(points[0], points[1]), Edge(points[1], points[2]), Edge(points[2], points[0])])
-                
-                    steps.append(("initial_edges", edges))
-                
-                    return edges
-            
-            def delaunay(points):
-                points = sorted(points, key=lambda p: (p.x, p.y))
-                if len(points) <= 3:
-                    return base_case(points)
-            
-                midpoint = len(points) // 2
-                left_points = points[:midpoint]
-                right_points = points[midpoint:]
-            
-                return merge(delaunay(left_points), delaunay(right_points))
-            </code>
-        </pre>
-            
-     </div>
-     <br><br><br><br><br>
-     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            document.querySelectorAll('pre code').forEach((block) => {
-                hljs.highlightBlock(block);
-            });
-        });
-    </script>
+    <section id="algorithm">
+        <h2>How Does the Algorithm Work?</h2>
+        <p>TODO: Add more info about the algorithm</p>
+    </section>
+
+    <section id="about">
+        <h2>What is Delaunay Triangulation?</h2>
+        <p>Delaunay triangulation divides a set of points in a plane into triangles such that no point lies inside the circumcircle of any triangle,  
+        ensuring that the resulting triangulation avoids narrow (sometimes called silver) triangles and maximizes the minimum angle, making it optimal for many geometric and computational tasks.  
+        The triangulation is often used in applications such as mesh generation, terrain modeling, and computer graphics, as it produces well-shaped triangles that are stable and efficient for interpolation and simulations.</p>
+    </section>
+    
+
+    <section id="refs">
+        <h2>References</h2>
+        <p>Here are a list of references that we used for both learning and presenting the algorithm:</p>
+        <a href="https://dl.acm.org/doi/10.1145/282918.282923">
+            <div>Primitives for the manipulation of general subdivisions and the computation of Voronoi</div>
+          </a>
+          <a href="http://www.geom.uiuc.edu/~samuelp/del_project.html">
+            <div>Computing Constrainted Delaunay Triangulations</div>
+          </a>
+          <a href="https://www.youtube.com/watch?v=GKVBOxzQ69E">
+            <div>Delaunay Triangulation: Divide and Conquer Algorithm Visualization</div>
+          </a>
+    </section>
+
+    <section id="authors">
+        <h2>Authors</h2>
+        <h3>Ayo Owolabi</h3>
+        <ul>
+            <li>Created initial grid and randomization, clearing, and coordinate toggling functionality</li>
+            <li>Implemented the core algorithm on the backend</li>
+            <li>Implemented the graham scan convex hull algorithm used in the final implementation</li>
+            <li>Testing both frontend and backend for correctness</li>
+        </ul>
+        <h3>John West</h3>
+        <ul>
+            <li>Initial backend implementation at the start of the project</li>
+            <li>Set up and configured the host for the Flask app</li>
+            <li>Created the layout and styling</li>
+            <li>Implemented event handling for generation and stepping, including the toggles and speed configurations</li>
+            <li>Testing frontend, trying to break things, pretending to be a user who discovered a computer yesterday</li>
+        </ul>
+    </section>
+    
+
     <script src="app.js"></script>
 </body>
 </html>
