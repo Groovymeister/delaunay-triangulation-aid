@@ -17,35 +17,41 @@
                 <li><a href="#algorithm">Algorithm</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#applications">Applications</a></li>
-                <li><a href="#authors">Contributions</a></li>
                 <li><a href="#refs">References</a></li>
+                <li><a href="#authors">Contributions</a></li>
             </ul>
         </nav>
     </header>
 
     <section id="demo">
-        <h2>Demo</h2>
-        <p>Below is our interactive demo. For further instructions, click "Usage" at the top.</p>
-        <!-- SVG container for the grid -->
-        <svg id="plot" width="1000" height="600" style="border: 1px solid black;"></svg>
-
-        <!-- Buttons container -->
-        <div id="buttons-container">
-            <button id="clear-button">Clear Points</button>
-            <button id="toggle-coords">Toggle Coordinates</button>
-            <input type="number" id="point-count" placeholder="Enter number of points" min="1" max="100">
-            <button id="randomize-button">Randomize</button>
-            <button id="generate-button">Generate</button>
-            <button id="step-button">Step</button>
+        <h2>Delaunay Triangulation: Divide and Conquer Algorithm</h2>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
             <div>
-                <label>
-                    <input type="checkbox" id="auto-mode-toggle"> Auto Mode
-                </label>
-                <input type="range" id="auto-mode-slider" min="100" max="2000" step="100" value="500">
-                <span id="slider-value">500ms</span>
+                <svg id="plot" width="600" height="600" style="border: 1px solid black;"></svg>
+    
+                <div id="buttons-container">
+                    <button id="clear-button">Clear Points</button>
+                    <button id="toggle-coords">Toggle Coordinates</button>
+                    <input type="number" id="point-count" placeholder="Enter number of points" min="3" max="100" value="15">
+                    <button id="randomize-button">Randomize</button>
+                    <button id="generate-button">Generate</button>
+                    <button id="step-button">Step</button>
+                    <div>
+                        <label>
+                            <input type="checkbox" id="auto-mode-toggle"> Auto Mode
+                        </label>
+                        <input type="range" id="auto-mode-slider" min="100" max="2000" step="100" value="500">
+                        <span id="slider-value">500ms</span>
+                    </div>
+                </div>
+            </div>
+            <div id="pseudocode">
+                <h3>Pseudocode</h3>
+                <p>TODO: Add pseudocode here, we can highlight l8r</p>
             </div>
         </div>
     </section>
+    
 
     <section id="how-to-use">
         <h2>How to Use Our Demo</h2>

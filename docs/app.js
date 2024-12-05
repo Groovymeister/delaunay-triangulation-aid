@@ -313,6 +313,7 @@ function startAutoMode() {
     fetchSteps(getAllPoints()).then(() => {
         if (steps.length > 0) {
             function executeStep() {
+                if (!autoModeEnabled) {return;}
                 if (currentStep < steps.length) {
                     processStep();
                     setTimeout(executeStep, parseInt(autoModeSlider.value));
