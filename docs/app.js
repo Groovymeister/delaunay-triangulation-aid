@@ -263,6 +263,16 @@ function processStep() {
                     .attr("stroke-width", 2)
                     .attr("class", "edge-line");
             });
+            section = document.getElementsByClassName("add")[0]
+            section.classList.add("highlight"); // Add highlight class
+            setTimeout(() => {
+                section.classList.remove("highlight");
+            }, 5000);
+            section.scrollIntoView({
+                behavior: "smooth", 
+                block: "center",   
+                inline: "nearest"  
+            });
             break;
         case "remove":
             step.edges.forEach(edge => {
@@ -278,6 +288,16 @@ function processStep() {
                     })
                     .remove();
             });
+            sectiton = document.getElementsByClassName("remove")[0]
+            section.classList.add("highlight"); // Add highlight class
+            setTimeout(() => {
+                section.classList.remove("highlight");
+            }, 5000);
+            section.scrollIntoView({
+                behavior: "smooth", 
+                block: "center",   
+                inline: "nearest"  
+            });
             break;
         case "initial_edges":
             step.edges.forEach(edge => {
@@ -290,7 +310,18 @@ function processStep() {
                     .attr("stroke-width", 2)
                     .attr("class", "edge-line");
             });
+            section = document.getElementsByClassName("initial_edges")[0]
+            section.classList.add("highlight"); // Add highlight class
+            setTimeout(() => {
+                section.classList.remove("highlight");
+            }, 5000);
+            section.scrollIntoView({
+                behavior: "smooth", 
+                block: "center",   
+                inline: "nearest"  
+            });
             break;
+
     }
     currentStep++;
 }
