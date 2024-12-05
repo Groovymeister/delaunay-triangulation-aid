@@ -28,127 +28,127 @@
     <section id="demo">
         <h2>Delaunay Triangulation: Divide and Conquer Algorithm</h2>
         <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-            <div style="border: 1px solid;">
+            <div>
                 <svg id="plot" width="600" height="600"></svg>
             </div>
             <div id="pseudocode">
                 <h3>Pseudocode</h3>
                 <pre> 
-def merge(left_triangulation, right_triangulation):
-triangulation = left_triangulation.union(right_triangulation)
-base_lr_edge = lr_edge(edges_to_points(left_triangulation), edges_to_points(right_triangulation))
-triangulation.add(base_lr_edge)
-steps.append(("add", base_lr_edge))
+    def merge(left_triangulation, right_triangulation):
+    triangulation = left_triangulation.union(right_triangulation)
+    base_lr_edge = lr_edge(edges_to_points(left_triangulation), edges_to_points(right_triangulation))
+    triangulation.add(base_lr_edge)
+    steps.append(("add", base_lr_edge))
 
-while True:
-    left_removed_edges = set()
-    right_removed_edges = set()
-    left_candidate = None
-    right_candidate = None
-    right_candidates = get_candidates(base_lr_edge, right_triangulation, True)
-    left_candidates = get_candidates(base_lr_edge, left_triangulation, False)
-    
-    
-    # for every potential right candidate, ensure
-    # 1. the angle it makes with the base is less than 180 
-    # 2. the next potential candidate is outside the circumcircle formed with the base edge
-    # ASSUMPTION: If we are looking at the final point, then we do not bother testing for if the next point is within circumcircle
-    while not right_candidate and len(right_candidates) > 0:
-        curr_poss_candidate = right_candidates[0]
-        next_poss_candidate = right_candidates[1] if len(right_candidates) > 1 else None
-        test_angle = clockwise_angle(base_lr_edge.p2, base_lr_edge.p1, base_lr_edge.p2, curr_poss_candidate)
-        if next_poss_candidate and test_angle &#60; math.pi and not is_point_in_circle(base_lr_edge.p1, base_lr_edge.p2, curr_poss_candidate, next_poss_candidate):
-            right_candidate = curr_poss_candidate
-            break
-        elif test_angle &#60; math.pi and not next_poss_candidate:
-            right_candidate = curr_poss_candidate
-        elif test_angle &#60; math.pi:
-            # first holds but second doesnt, remove RR edge from potential candidates, consider next right candidate 
-            triangulation.discard(Edge(base_lr_edge.p2, curr_poss_candidate))
-            steps.append(("remove", Edge(base_lr_edge.p2, curr_poss_candidate)))
-            right_removed_edges.add(Edge(base_lr_edge.p2, curr_poss_candidate))
-            right_candidates.pop(0) 
-        else:
-            break # If the first criteria does not hold, we do not select a right candidate
+    while True:
+        left_removed_edges = set()
+        right_removed_edges = set()
+        left_candidate = None
+        right_candidate = None
+        right_candidates = get_candidates(base_lr_edge, right_triangulation, True)
+        left_candidates = get_candidates(base_lr_edge, left_triangulation, False)
+        
+        
+        # for every potential right candidate, ensure
+        # 1. the angle it makes with the base is less than 180 
+        # 2. the next potential candidate is outside the circumcircle formed with the base edge
+        # ASSUMPTION: If we are looking at the final point, then we do not bother testing for if the next point is within circumcircle
+        while not right_candidate and len(right_candidates) > 0:
+            curr_poss_candidate = right_candidates[0]
+            next_poss_candidate = right_candidates[1] if len(right_candidates) > 1 else None
+            test_angle = clockwise_angle(base_lr_edge.p2, base_lr_edge.p1, base_lr_edge.p2, curr_poss_candidate)
+            if next_poss_candidate and test_angle &#60; math.pi and not is_point_in_circle(base_lr_edge.p1, base_lr_edge.p2, curr_poss_candidate, next_poss_candidate):
+                right_candidate = curr_poss_candidate
+                break
+            elif test_angle &#60; math.pi and not next_poss_candidate:
+                right_candidate = curr_poss_candidate
+            elif test_angle &#60; math.pi:
+                # first holds but second doesnt, remove RR edge from potential candidates, consider next right candidate 
+                triangulation.discard(Edge(base_lr_edge.p2, curr_poss_candidate))
+                steps.append(("remove", Edge(base_lr_edge.p2, curr_poss_candidate)))
+                right_removed_edges.add(Edge(base_lr_edge.p2, curr_poss_candidate))
+                right_candidates.pop(0) 
+            else:
+                break # If the first criteria does not hold, we do not select a right candidate
 
-    while not left_candidate and len(left_candidates) > 0:
-        curr_poss_candidate = left_candidates[0]
-        next_poss_candidate = left_candidates[1] if len(left_candidates) > 1 else None
-        test_angle = clockwise_angle(base_lr_edge.p1, curr_poss_candidate, base_lr_edge.p1, base_lr_edge.p2)
-        if next_poss_candidate and test_angle &#60; math.pi and not is_point_in_circle(base_lr_edge.p1, base_lr_edge.p2, curr_poss_candidate, next_poss_candidate):
-            left_candidate = curr_poss_candidate
+        while not left_candidate and len(left_candidates) > 0:
+            curr_poss_candidate = left_candidates[0]
+            next_poss_candidate = left_candidates[1] if len(left_candidates) > 1 else None
+            test_angle = clockwise_angle(base_lr_edge.p1, curr_poss_candidate, base_lr_edge.p1, base_lr_edge.p2)
+            if next_poss_candidate and test_angle &#60; math.pi and not is_point_in_circle(base_lr_edge.p1, base_lr_edge.p2, curr_poss_candidate, next_poss_candidate):
+                left_candidate = curr_poss_candidate
+                break
+            elif test_angle &#60; math.pi and not next_poss_candidate:
+                left_candidate = curr_poss_candidate
+            <div id="remove">
+                <span style="font-weight: bold; color: green;">REMOVING AN EDGE</span>
+            elif test_angle &#60; math.pi:
+                # first holds but second doesnt, remove RR edge from potential candidates, consider next right candidate 
+                triangulation.discard(Edge(base_lr_edge.p1, curr_poss_candidate))
+                steps.append(("remove", Edge(base_lr_edge.p1, curr_poss_candidate)))
+                left_candidates.pop(0) 
+
+            </div>
+            else:
+                break # If the first criteria does not hold, we do not select a left candidate
+        
+        # No candidates were returned, merge complete
+        if not left_candidate and not right_candidate:
+            triangulation.update(left_removed_edges)
+            triangulation.update(right_removed_edges)
             break
-        elif test_angle &#60; math.pi and not next_poss_candidate:
-            left_candidate = curr_poss_candidate
-        <div id="remove">
-            <span style="font-weight: bold; color: green;">REMOVING AN EDGE</span>
-        elif test_angle &#60; math.pi:
-            # first holds but second doesnt, remove RR edge from potential candidates, consider next right candidate 
-            triangulation.discard(Edge(base_lr_edge.p1, curr_poss_candidate))
-            steps.append(("remove", Edge(base_lr_edge.p1, curr_poss_candidate)))
-            left_candidates.pop(0) 
+        <div id="add">
+            <span style="font-weight: bold; color: green;">ADDING AN EDGE</span>
+        # Both candidates were returned, create new lr edge for candidate which forms circumcircle that does not contain other point
+        elif left_candidate and right_candidate:
+            if is_point_in_circle(base_lr_edge.p1, base_lr_edge.p2, right_candidate, left_candidate):
+                new_lr_edge = Edge(left_candidate, base_lr_edge.p2)
+                triangulation.update(right_removed_edges)
+            else:
+                new_lr_edge = Edge(base_lr_edge.p1, right_candidate)
+                triangulation.update(left_removed_edges)
+        # One candiate was returned, create new lr edge
+        elif left_candidate or right_candidate:
+            new_lr_edge = Edge(base_lr_edge.p1, right_candidate) if right_candidate else Edge(left_candidate, base_lr_edge.p2)
+            triangulation.update(left_removed_edges) if right_candidate else triangulation.update(right_removed_edges)
 
         </div>
         else:
-            break # If the first criteria does not hold, we do not select a left candidate
-    
-    # No candidates were returned, merge complete
-    if not left_candidate and not right_candidate:
-        triangulation.update(left_removed_edges)
-        triangulation.update(right_removed_edges)
-        break
-    <div id="add">
-        <span style="font-weight: bold; color: green;">ADDING AN EDGE</span>
-    # Both candidates were returned, create new lr edge for candidate which forms circumcircle that does not contain other point
-    elif left_candidate and right_candidate:
-        if is_point_in_circle(base_lr_edge.p1, base_lr_edge.p2, right_candidate, left_candidate):
-            new_lr_edge = Edge(left_candidate, base_lr_edge.p2)
-            triangulation.update(right_removed_edges)
-        else:
-            new_lr_edge = Edge(base_lr_edge.p1, right_candidate)
-            triangulation.update(left_removed_edges)
-    # One candiate was returned, create new lr edge
-    elif left_candidate or right_candidate:
-        new_lr_edge = Edge(base_lr_edge.p1, right_candidate) if right_candidate else Edge(left_candidate, base_lr_edge.p2)
-        triangulation.update(left_removed_edges) if right_candidate else triangulation.update(right_removed_edges)
+            raise ValueError(f"No new edge was formed")
+        triangulation.add(new_lr_edge)
+        base_lr_edge = new_lr_edge
+        steps.append(("add", base_lr_edge))
 
+    return triangulation
+    <div id="initial_edges" style="width: 100%;">
+    <span style="font-weight: bold; color: green;">BASE CASE</span>
+    # base case for dividing points
+    def base_case(points):
+    edges = set()
+    # if there are only two points, add an edge
+    if len(points) == 2:
+        edges.add(Edge(points[0], points[1]))
+    # if there are three points, add edges between every two points
+    elif len(points) == 3:
+        edges.update([Edge(points[0], points[1]), Edge(points[1], points[2]), Edge(points[2], points[0])])
+
+    steps.append(("initial_edges", edges))
+
+    return edges
     </div>
-    else:
-        raise ValueError(f"No new edge was formed")
-    triangulation.add(new_lr_edge)
-    base_lr_edge = new_lr_edge
-    steps.append(("add", base_lr_edge))
 
-return triangulation
-<div id="initial_edges" style="width: 100%;">
-<span style="font-weight: bold; color: green;">BASE CASE</span>
-# base case for dividing points
-def base_case(points):
-edges = set()
-# if there are only two points, add an edge
-if len(points) == 2:
-    edges.add(Edge(points[0], points[1]))
-# if there are three points, add edges between every two points
-elif len(points) == 3:
-    edges.update([Edge(points[0], points[1]), Edge(points[1], points[2]), Edge(points[2], points[0])])
+    def delaunay(points):
+    points = sorted(points, key=lambda p: (p.x, p.y))
+    if len(points) &#60;= 3:
+        return base_case(points)
 
-steps.append(("initial_edges", edges))
+    midpoint = len(points) // 2
+    left_points = points[:midpoint]
+    right_points = points[midpoint:]
 
-return edges
-</div>
+    return merge(delaunay(left_points), delaunay(right_points))
 
-def delaunay(points):
-points = sorted(points, key=lambda p: (p.x, p.y))
-if len(points) &#60;= 3:
-    return base_case(points)
-
-midpoint = len(points) // 2
-left_points = points[:midpoint]
-right_points = points[midpoint:]
-
-return merge(delaunay(left_points), delaunay(right_points))
-<span id="test">tests</span>
-                </pre>
+            </pre>
             </div>
         </div>
         <div id="buttons-container">
@@ -170,15 +170,55 @@ return merge(delaunay(left_points), delaunay(right_points))
     
 
     <section id="how-to-use">
-        <h2>How to Use Our Demo</h2>
-        <p>TODO: ADD INSTRUCTIONS</p>
-    </section>
+        <h2>How to Use This Demo</h2>
 
-    <section id="algorithm">
-        <h2>How Does the Algorithm Work?</h2>
-        <p>TODO: Add more info about the algorithm</p>
-    </section>
+        <ol>
+            <li><strong>Generate Points</strong>
+                <ul>
+                    <li><strong>Option 1:</strong> Click on the grid to manually add points.</li>
+                    <li><strong>Option 2:</strong> Enter the desired number of points in the input box, then click on <strong>Generate</strong>.</li>
+                </ul>
+            </li>
 
+            <li><strong>Create the Triangulation</strong>
+                <ul>
+                    <li><strong>Full Triangulation:</strong> Click on <strong>Generate</strong> to instantly create the Delaunay Triangulation for all points.</li>
+                    <li><strong>Step-by-Step Creation:</strong> Click on <strong>Step</strong> to walk through the algorithm step-by-step, visualizing each stage of the triangulation process.</li>
+                </ul>
+            </li>
+
+            <li><strong>Toggle Coordinates</strong>
+                <ul>
+                    <li>Click on <strong>Toggle Coordinates</strong> to show or hide the coordinates of the points on the grid.</li>
+                </ul>
+            </li>
+
+            <li><strong>Clear Points</strong>
+                <ul>
+                    <li>Click on <strong>Clear Points</strong> to:
+                        <ul>
+                            <li>Remove all points from the grid.</li>
+                            <li>Remove any existing triangulation, if one is present on the page.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+
+            <li><strong>Auto-Play</strong>
+                <ul>
+                    <li>After generating points (either manually or using the <strong>Randomize</strong> button), click on <strong>Auto</strong> to automatically step through the triangulation algorithm.</li>
+                    <li>Use the slider to control the speed of the algorithm as it steps through.</li>
+                </ul>
+            </li>
+
+            <li><strong>Important Note</strong>
+                <ul>
+                    <li>You cannot add new points to the grid once the triangulation has been generated unless you clear the current triangulation first.</li>
+                </ul>
+            </li>
+        </ol>
+
+    </section>
     <section id="about">
         <h2>What is Delaunay Triangulation?</h2>
         <p>Delaunay triangulation divides a set of points in a plane into triangles such that no point lies inside the circumcircle of any triangle,  
@@ -186,17 +226,35 @@ return merge(delaunay(left_points), delaunay(right_points))
         The triangulation is often used in applications such as mesh generation, terrain modeling, and computer graphics, as it produces well-shaped triangles that are stable and efficient for interpolation and simulations.</p>
     </section>
     
+    <section id="algorithm">
+        <h2>How Does the Algorithm Work?</h2>
+        <p>The goal of the Delaunay triangulation algorithm is to create a triangulation of a set of points in the plane, such that no point lies inside the circumcircle of any triangle in the triangulation. This ensures that the triangulation is "well-formed" with maximized minimum angles.</p>
+        <h4>Algorithm Steps</h4>
+        <ol>
+            <li><strong>Point Sorting:</strong> The points are initially sorted based on their x-coordinates. If two points share the same x-coordinate, their order is determined by the y-coordinate.</li>
+            <li><strong>Recursive Subdivision:</strong> The sorted points are recursively split into two halves until each subset has at most three points. These subsets are trivially triangulated.</li>
+            <li><strong>Merging Subsets:</strong> The individual triangulations of these subsets are merged. During this merge, new edges are introduced between points from the left and right subsets, called "LR-edges". Existing edges from the left and right subsets are maintained as "LL-edges" and "RR-edges".</li>
+            <li><strong>Maintaining Delaunay Property:</strong> To maintain the Delaunay property during the merging process, edges that do not satisfy the Delaunay criterion are removed and replaced by new edges.</li>
+            <li><strong>Final Triangulation:</strong> This process continues until all subsets are merged back into a complete triangulation, resulting in a valid Delaunay triangulation where no point lies inside any triangle’s circumcircle.</li>
+        </ol>
+        
+        <h4>Key Features</h4>
+        <p>The algorithm guarantees a <strong>unique Delaunay triangulation</strong> for any set of points (except in cases of co-circular points), and it minimizes the number of small angles in the triangles, making it geometrically pleasing and efficient for computational geometry applications.</p>
+
+    </section>
+
+    
 
     <section id="refs">
         <h2>References</h2>
         <p>Here are a list of references that we used for both learning and presenting the algorithm:</p>
-        <a href="https://dl.acm.org/doi/10.1145/282918.282923">
+        <a href="https://dl.acm.org/doi/10.1145/282918.282923" target="_blank">
             <div>Primitives for the manipulation of general subdivisions and the computation of Voronoi</div>
           </a>
-          <a href="http://www.geom.uiuc.edu/~samuelp/del_project.html">
+          <a href="http://www.geom.uiuc.edu/~samuelp/del_project.html" target="_blank">
             <div>Computing Constrainted Delaunay Triangulations</div>
           </a>
-          <a href="https://www.youtube.com/watch?v=GKVBOxzQ69E">
+          <a href="https://www.youtube.com/watch?v=GKVBOxzQ69E" target="_blank">
             <div>Delaunay Triangulation: Divide and Conquer Algorithm Visualization</div>
           </a>
     </section>

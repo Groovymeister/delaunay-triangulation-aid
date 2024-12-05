@@ -8,6 +8,7 @@ body {
     align-items: center;
     justify-content: flex-start;
     min-height: 100vh;
+    line-height: 1.6rem;
 }
 
 header {
