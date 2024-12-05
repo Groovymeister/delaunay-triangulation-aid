@@ -3,32 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clickable D3 Plot with Gridlines</title>
+    <title>Delaunay Triangulation: Divide and Conquer Algorithm</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="format.css">
 </head>
 <body>
-    <h1>Delaunay Triangulation: Divide and Conquer Algorithm</h1>
-    <p>Delaunay triangulation diodes a set of points in a plane into triangles such that no point is inside the circumcircle of any triangle. This is a useful algorithm in computer graphics when creating well-shaped triangles in meshes. It is also useful in terrain modeling when handling geographic data and in networking by ensuring efficient communication paths. For our project, we are going to create a pedagogical aid that walks through the process of a divide and conquer algorithm that solves the Delaunay Triangulation problem in O(n log n) time.</p>
-    <!-- SVG container for the grid -->
-    <svg id="plot" width="1000" height="600" style="border: 1px solid black;"></svg>
+    <header>
+        <h1>Delaunay Triangulation: Divide and Conquer Algorithm</h1>
+        <nav>
+            <ul>
+                <li><a href="#demo">Demo</a></li>
+                <li><a href="#how-to-use">Usage</a></li>
+                <li><a href="#algorithm">Algorithm</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#applications">Applications</a></li>
+                <li><a href="#authors">Contributions</a></li>
+                <li><a href="#refs">References</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <!-- Buttons container -->
-    <div id="buttons-container">
-        <button id="clear-button">Clear Points</button>
-        <button id="toggle-coords">Toggle Coordinates</button>
-        <!-- Input box and Randomize button -->
-        <input type="number" id="point-count" placeholder="Enter number of points" min="1" max="100">
-        <button id="randomize-button">Randomize</button>
-        <button id="generate-button">Generate</button>
-        <button id="step-button">Step</button>
-        <div>
-            <label>
-                <input type="checkbox" id="auto-mode-toggle"> Auto Mode
-            </label>
-            <input type="range" id="auto-mode-slider" min="100" max="2000" step="100" value="500">
-            <span id="slider-value">500ms</span>
+    <section id="demo">
+        <h2>Demo</h2>
+        <p>Below is our interactive demo. For further instructions, click "Usage" at the top.</p>
+        <!-- SVG container for the grid -->
+        <svg id="plot" width="1000" height="600" style="border: 1px solid black;"></svg>
+
+        <!-- Buttons container -->
+        <div id="buttons-container">
+            <button id="clear-button">Clear Points</button>
+            <button id="toggle-coords">Toggle Coordinates</button>
+            <input type="number" id="point-count" placeholder="Enter number of points" min="1" max="100">
+            <button id="randomize-button">Randomize</button>
+            <button id="generate-button">Generate</button>
+            <button id="step-button">Step</button>
+            <div>
+                <label>
+                    <input type="checkbox" id="auto-mode-toggle"> Auto Mode
+                </label>
+                <input type="range" id="auto-mode-slider" min="100" max="2000" step="100" value="500">
+                <span id="slider-value">500ms</span>
+            </div>
         </div>
-    </div>
+    </section>
+
+    <section id="how-to-use">
+        <h2>How to Use Our Demo</h2>
+        <p>TODO: ADD INSTRUCTIONS</p>
+    </section>
+
+    <section id="algorithm">
+        <h2>How Does the Algorithm Work?</h2>
+        <p>TODO: Add more info about the algorithm</p>
+    </section>
+
+    <section id="about">
+        <h2>What is Delaunay Triangulation?</h2>
+        <p>TODO: Add more info about triangulation</p>
+    </section>
+
+    <section id="applications">
+        <h2>What Are Some Applications of Delaunay Triangulation?</h2>
+        <p>TODO: Add more applications info</p>
+    </section>
+
+    <section id="refs">
+        <h2>References</h2>
+        <p>TODO: Add sources we used for this project</p>
+    </section>
+
+    <section id="authors">
+        <h2>Authors</h2>
+        <ul>
+            <li><strong>Author 1:</strong> Main developer of the Delaunay Triangulation algorithm.</li>
+            <li><strong>Author 2:</strong> Contributed to the UI design and user interactions.</li>
+        </ul>
+    </section>
 
     <script src="app.js"></script>
 </body>
