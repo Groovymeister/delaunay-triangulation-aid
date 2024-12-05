@@ -203,6 +203,7 @@ document.getElementById("generate-button").addEventListener("click", () => {
 });
 
 function fetchSteps(points) {
+    // return fetch('http://127.0.0.1:5000/api/step', {
     return fetch('https://delaunay-triangulation-aid.onrender.com/api/step', {
         method: 'POST',
         headers: {
@@ -263,14 +264,11 @@ function processStep() {
                     .attr("stroke-width", 2)
                     .attr("class", "edge-line");
             });
-            section = document.getElementsByClassName("add")[0]
-            section.classList.add("highlight"); // Add highlight class
-            setTimeout(() => {
-                section.classList.remove("highlight");
-            }, 5000);
+            section = document.getElementById("add");
+     
             section.scrollIntoView({
                 behavior: "smooth", 
-                block: "center",   
+                block: "nearest",   
                 inline: "nearest"  
             });
             break;
@@ -288,14 +286,11 @@ function processStep() {
                     })
                     .remove();
             });
-            sectiton = document.getElementsByClassName("remove")[0]
-            section.classList.add("highlight"); // Add highlight class
-            setTimeout(() => {
-                section.classList.remove("highlight");
-            }, 5000);
+            section = document.getElementById("remove");
+         
             section.scrollIntoView({
                 behavior: "smooth", 
-                block: "center",   
+                block: "nearest",   
                 inline: "nearest"  
             });
             break;
@@ -310,14 +305,10 @@ function processStep() {
                     .attr("stroke-width", 2)
                     .attr("class", "edge-line");
             });
-            section = document.getElementsByClassName("initial_edges")[0]
-            section.classList.add("highlight"); // Add highlight class
-            setTimeout(() => {
-                section.classList.remove("highlight");
-            }, 5000);
+            section = document.getElementById("initial_edges");
             section.scrollIntoView({
                 behavior: "smooth", 
-                block: "center",   
+                block: "nearest",   
                 inline: "nearest"  
             });
             break;

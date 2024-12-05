@@ -3,8 +3,10 @@ from flask_cors import CORS
 import numpy as np
 from scipy.spatial import Delaunay
 import os
+import sys
 from delaunay import delaunay, Point, Edge, return_steps
-
+# sys.path.append(os.path.abspath('..'))
+# from main import *
 app = Flask(__name__)
 CORS(app)
 
