@@ -16,7 +16,6 @@
                 <li><a href="#how-to-use">Usage</a></li>
                 <li><a href="#algorithm">Algorithm</a></li>
                 <li><a href="#about">About</a></li>
-                <li><a href="#applications">Applications</a></li>
                 <li><a href="#refs">References</a></li>
                 <li><a href="#authors">Contributions</a></li>
             </ul>
@@ -65,26 +64,45 @@
 
     <section id="about">
         <h2>What is Delaunay Triangulation?</h2>
-        <p>TODO: Add more info about triangulation</p>
+        <p>Delaunay triangulation divides a set of points in a plane into triangles such that no point lies inside the circumcircle of any triangle,  
+        ensuring that the resulting triangulation avoids narrow (sometimes called silver) triangles and maximizes the minimum angle, making it optimal for many geometric and computational tasks.  
+        The triangulation is often used in applications such as mesh generation, terrain modeling, and computer graphics, as it produces well-shaped triangles that are stable and efficient for interpolation and simulations.</p>
     </section>
-
-    <section id="applications">
-        <h2>What Are Some Applications of Delaunay Triangulation?</h2>
-        <p>TODO: Add more applications info</p>
-    </section>
+    
 
     <section id="refs">
         <h2>References</h2>
-        <p>TODO: Add sources we used for this project</p>
+        <p>Here are a list of references that we used for both learning and presenting the algorithm:</p>
+        <a href="https://dl.acm.org/doi/10.1145/282918.282923">
+            <div>Primitives for the manipulation of general subdivisions and the computation of Voronoi</div>
+          </a>
+          <a href="http://www.geom.uiuc.edu/~samuelp/del_project.html">
+            <div>Computing Constrainted Delaunay Triangulations</div>
+          </a>
+          <a href="https://www.youtube.com/watch?v=GKVBOxzQ69E">
+            <div>Delaunay Triangulation: Divide and Conquer Algorithm Visualization</div>
+          </a>
     </section>
 
     <section id="authors">
         <h2>Authors</h2>
+        <h3>Ayo Owolabi</h3>
         <ul>
-            <li><strong>Author 1:</strong> Main developer of the Delaunay Triangulation algorithm.</li>
-            <li><strong>Author 2:</strong> Contributed to the UI design and user interactions.</li>
+            <li>Created initial grid and randomization, clearing, and coordinate toggling functionality</li>
+            <li>Implemented the core algorithm on the backend</li>
+            <li>Implemented the graham scan convex hull algorithm used in the final implementation</li>
+            <li>Testing both frontend and backend for correctness</li>
+        </ul>
+        <h3>John West</h3>
+        <ul>
+            <li>Initial backend implementation at the start of the project</li>
+            <li>Set up and configured the host for the Flask app</li>
+            <li>Created the layout and styling</li>
+            <li>Implemented event handling for generation and stepping, including the toggles and speed configurations</li>
+            <li>Testing frontend, trying to break things, pretending to be a user who discovered a computer yesterday</li>
         </ul>
     </section>
+    
 
     <script src="app.js"></script>
 </body>
