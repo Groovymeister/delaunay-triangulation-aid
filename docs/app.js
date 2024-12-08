@@ -160,6 +160,9 @@ document.getElementById("randomize-button").addEventListener("click", () => {
 });
 
 document.getElementById("generate-button").addEventListener("click", () => {
+    if (triangulationComplete){
+        reset();
+    }
     // check if auto button is clicked, if it is, enable pause button
     if (autoModeEnabled){
         pauseButton.style.display = "block"
