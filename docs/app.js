@@ -3,9 +3,14 @@ const width = +svg.attr("width");
 const height = +svg.attr("height");
 const originX = width / 2;  // x = 0 point
 const originY = height / 2;  // y = 0 point
-const autoModeToggle = document.getElementById("auto-mode-toggle");
+let autoModeToggle = document.getElementById("auto-mode-toggle");
 const autoModeSlider = document.getElementById("auto-mode-slider");
 const sliderValueDisplay = document.getElementById("slider-value");
+
+let backButton = document.getElementById("back-button");
+let pauseButton = document.getElementById("pause-button");
+pauseButton.style.display = "none";
+let resetButton = document.getElementById("reset-button");
 
 let steps = [];
 let currentStep = 0;
@@ -155,6 +160,12 @@ document.getElementById("randomize-button").addEventListener("click", () => {
 });
 
 document.getElementById("generate-button").addEventListener("click", () => {
+    // check if auto button is clicked, if it is, enable pause button
+    if (autoModeEnabled){
+        pauseButton.style.display = "block"
+    }
+    // change resume button to pause button
+    pauseButton.textContent = "Pause";
     if (autoModeEnabled) { startAutoMode();}
     else{
     const points = [];
@@ -199,6 +210,8 @@ document.getElementById("generate-button").addEventListener("click", () => {
         console.error('Error:', error);
     });
     triangulationComplete = true;
+    // remove pause button if triangulation is complete
+    pauseButton.style.display = "none";
 }
 });
 
@@ -247,6 +260,8 @@ document.getElementById("step-button").addEventListener("click", () => {
     } else {
         console.log("No more steps to perform.");
         triangulationComplete = true;
+        // remove pause button if triangulation is complete
+        pauseButton.style.display = "none";
     }
 });
 
@@ -341,9 +356,103 @@ function startAutoMode() {
                     setTimeout(executeStep, parseInt(autoModeSlider.value));
                 } else {
                     triangulationComplete = true;
+                    // remove pause button if triangulation is complete
+                    pauseButton.style.display = "none";
                 }
             }
             executeStep();
         }
     });
+}
+// pause functionality
+pauseButton.addEventListener("click", () => {
+    if (pauseButton.textContent == "Pause"){
+        pause();
+    } else{
+        resume();
+    }
+});
+function pause(){
+    // setting auto mode enabled to false is functionally same as pausing algo. 
+    autoModeToggle.checked = false;
+    autoModeToggle.dispatchEvent(new Event('change', { bubbles: true }));
+    // change pause button to resume button
+    pauseButton.textContent = "Resume";
+}
+
+function resume(){
+    // resuming is essentially setting automode to true and clicking generate
+    autoModeToggle.checked = true;
+    autoModeToggle.dispatchEvent(new Event('change', { bubbles: true }));
+    // resume is changed to pause button once generate is started
+    document.getElementById("generate-button").click();
+}
+// back functionality
+document.getElementById("back-button").addEventListener("click", () => {
+    if (currentStep > 0) {
+        currentStep--;
+        const step = steps[currentStep];
+        switch (step.type) {
+            case "add":
+                step.edges.forEach(edge => {
+                    svg.selectAll(".edge-line")
+                        .filter(function() {
+                            const line = d3.select(this);
+                            const x1 = +line.attr("x1");
+                            const y1 = +line.attr("y1");
+                            const x2 = +line.attr("x2");
+                            const y2 = +line.attr("y2");
+                            return (x1 === originX + edge.p1.x && y1 === originY - edge.p1.y &&
+                                x2 === originX + edge.p2.x && y2 === originY - edge.p2.y);
+                        })
+                        .remove();
+                });
+                break;
+            case "remove":
+                step.edges.forEach(edge => {
+                    svg.append("line")
+                        .attr("x1", originX + edge.p1.x)
+                        .attr("y1", originY - edge.p1.y)
+                        .attr("x2", originX + edge.p2.x)
+                        .attr("y2", originY - edge.p2.y)
+                        .attr("stroke", "blue")
+                        .attr("stroke-width", 2)
+                        .attr("class", "edge-line");
+                });
+                break;
+            case "initial_edges":
+                step.edges.forEach(edge => {
+                    svg.selectAll(".edge-line")
+                        .filter(function() {
+                            const line = d3.select(this);
+                            const x1 = +line.attr("x1");
+                            const y1 = +line.attr("y1");
+                            const x2 = +line.attr("x2");
+                            const y2 = +line.attr("y2");
+                            return (x1 === originX + edge.p1.x && y1 === originY - edge.p1.y &&
+                                x2 === originX + edge.p2.x && y2 === originY - edge.p2.y);
+                        })
+                        .remove();
+                });
+                break;
+        }
+    } else {
+        console.log("Already at the beginning of the simulation");
+    }
+});
+
+
+// reset functionality
+resetButton.addEventListener("click", reset);
+function reset(){
+    // clear edges
+    clearEdges();
+    // set current step back to 0
+    currentStep = 0;
+    if (autoModeInterval) {
+        clearInterval(autoModeInterval);
+        autoModeInterval = null;
+    }
+    // set triangulationComplete to false
+    triangulationComplete = false;
 }
