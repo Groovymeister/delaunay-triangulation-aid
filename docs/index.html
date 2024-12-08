@@ -227,12 +227,16 @@
         <p>Delaunay triangulation divides a set of points in a plane into triangles such that no point lies inside the circumcircle of any triangle,  
         ensuring that the resulting triangulation avoids narrow (sometimes called silver) triangles and maximizes the minimum angle, making it optimal for many geometric and computational tasks.  
         The triangulation is often used in applications such as mesh generation, terrain modeling, and computer graphics, as it produces well-shaped triangles that are stable and efficient for interpolation and simulations.</p>
+
+        <h2>Motivation</h2>
+        <p>There aren't many resources that explain Delaunay triangulation in an easy-to-understand way. Students often struggle to learn this complex geometric algorithm through traditional text and static diagrams.</p>
+        <p>An interactive tool can help by showing how points transform step by step. By breaking down complex geometric ideas into visual, easy-to-follow stages, learners can better understand how the algorithm works. Such a tool offers additional benefits like illustrating the efficiency of divide-and-conquer strategies, demonstrating how recursive approaches solve complex geometric problems, and showing step-by-step time complexity reduction. Users can input their own point sets, explore how different point configurations impact triangulation, and receive immediate visual feedback for algorithmic transformations.</p>
     </section>
     
     <section id="algorithm">
         <h2>How Does the Algorithm Work?</h2>
         <p>The goal of the Delaunay triangulation algorithm is to create a triangulation of a set of points in the plane, such that no point lies inside the circumcircle of any triangle in the triangulation. This ensures that the triangulation is "well-formed" with maximized minimum angles.</p>
-        <h4>Algorithm Steps</h4>
+        <h3>Algorithm Steps (Overview) </h3>
         <ol>
             <li><strong>Point Sorting:</strong> The points are initially sorted based on their x-coordinates. If two points share the same x-coordinate, their order is determined by the y-coordinate.</li>
             <li><strong>Recursive Subdivision:</strong> The sorted points are recursively split into two halves until each subset has at most three points. These subsets are trivially triangulated.</li>
@@ -240,7 +244,119 @@
             <li><strong>Maintaining Delaunay Property:</strong> To maintain the Delaunay property during the merging process, edges that do not satisfy the Delaunay criterion are removed and replaced by new edges.</li>
             <li><strong>Final Triangulation:</strong> This process continues until all subsets are merged back into a complete triangulation, resulting in a valid Delaunay triangulation where no point lies inside any triangle’s circumcircle.</li>
         </ol>
-        
+        <h3>Step-by-Step Process</h3>
+
+        <h3>1. Point Ordering</h3>
+        <ul>
+            <li>Begin by ordering all points based on their x-coordinates.</li>
+            <li>When points share the same x-coordinate, order them by their y-coordinates.</li>
+            <li>This initial ordering is crucial for the subsequent division and merging steps.</li>
+        </ul>
+
+        <h3>2. Point Set Division</h3>
+        <ul>
+            <li>Recursively divide the ordered point set into smaller subsets.</li>
+            <li>Continue dividing until each subset contains three or fewer points.</li>
+            <li>Subsets of two points are represented as line segments.</li>
+            <li>Subsets of three points are immediately triangulated.</li>
+        </ul>
+
+        <h3>3. Initial Triangulation of Small Subsets</h3>
+        <ul>
+            <li>For two-point subsets, create a simple line segment.</li>
+            <li>For three-point subsets, create a triangle.</li>
+            <li>These small, initial triangulations serve as the building blocks for the final Delaunay triangulation.</li>
+        </ul>
+
+        <h3>4. Recursive Merging of Triangulations</h3>
+        <p>The merging process involves carefully combining triangulated subsets while maintaining Delaunay properties:</p>
+
+        <h4>Edge Classification</h4>
+        <ul>
+            <li>LL-edges: Edges from the original left triangulation</li>
+            <li>RR-edges: Edges from the original right triangulation</li>
+            <li>LR-edges: New edges connecting points between left and right triangulations</li>
+        </ul>
+
+        <h4>Merge Rules</h4>
+        <ul>
+            <li>Never create new LL or RR-edges during merging</li>
+            <li>Potentially delete existing LL and RR-edges to maintain Delaunay properties</li>
+        </ul>
+
+        <h3>5. Base LR-Edge Insertion</h3>
+        <ul>
+            <li>Identify the base LR-edge by examining the convex hulls of both triangulations</li>
+            <li>Start from the rightmost point on the left triangulation and the leftmost point on the right triangulation</li>
+            <li>Move clockwise on the left triangulation's hull</li>
+            <li>Move counterclockwise on the right triangulation's hull</li>
+            <li>Ensure the new line formed is below the previous line</li>
+            <li>Continue this process of finding the lowest connecting edge between the two hulls until no further movement is possible on either hull</li>
+            <li>Insert this bottom-most LR-edge that does not intersect any existing LL or RR-edges</li>
+        </ul>
+
+        <h3>6. Candidate Selection and Validation</h3>
+        <p>For each merge, select and validate potential new LR-edges:</p>
+
+        <h4>Right Side Candidate Selection</h4>
+        <ol>
+            <li>Identify points connected to the base LR-edge's right endpoint</li>
+            <li>Sort these connected points by the clockwise angle made between:
+                <ul>
+                    <li>The base edge</li>
+                    <li>The new possible edge (for the right triangulation)</li>
+                </ul>
+            </li>
+            <li>Select candidates in order of increasing clockwise angle</li>
+        </ol>
+
+        <h4>Left Side Candidate Selection</h4>
+        <ol>
+            <li>Identify points connected to the base LR-edge's left endpoint</li>
+            <li>Sort these connected points by the clockwise angle made between:
+                <ul>
+                    <li>The new possible edge</li>
+                    <li>The base edge (for the left triangulation)</li>
+                </ul>
+            </li>
+            <li>Select candidates in order of increasing clockwise angle</li>
+        </ol>
+
+        <h4>Validation Criteria</h4>
+        <ol>
+            <li>Clockwise angle from base LR-edge must be less than 180 degrees</li>
+            <li>The candidate's circumcircle must not contain the next potential candidate</li>
+        </ol>
+
+        <h3>7. LR-Edge Determination</h3>
+        <ul>
+            <li>If no candidates are found, the merge is complete</li>
+            <li>If one candidate is found, it defines the new LR-edge</li>
+            <li>With two candidates, select the edge that does not place the other candidate inside its circumcircle</li>
+        </ul>
+
+        <h3>8. Iterative Merging</h3>
+        <ul>
+            <li>Repeat the candidate selection and LR-edge insertion process</li>
+            <li>Move upward from the base LR-edge</li>
+            <li>A candidate will always be found during the merge process</li>
+            <li>Once no new merge candidates can be identified, the merge is complete</li>
+        </ul>
+
+        <h3>9. Final Triangulation</h3>
+        <ul>
+            <li>Merge the final two halves of the divided point set</li>
+            <li>Complete the Delaunay triangulation</li>
+        </ul>
+
+        <h2>Theoretical Guarantees</h2>
+        <ul>
+            <li>The algorithm guarantees the existence of a Delaunay triangulation</li>
+            <li>Only one unique triangulation exists (except for co-circular points)</li>
+        </ul>
+
+
+
         <h4>Key Features</h4>
         <p>The algorithm guarantees a <strong>unique Delaunay triangulation</strong> for any set of points (except in cases of co-circular points), and it minimizes the number of small angles in the triangles, making it geometrically pleasing and efficient for computational geometry applications.</p>
 
